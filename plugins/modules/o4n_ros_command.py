@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-from __future__ import (absolute_import, division, print_function) # Ansible
+from __future__ import (absolute_import, division, print_function)  # Ansible
 __metaclass__ = type
 
 DOCUMENTATION = r'''
@@ -70,7 +70,14 @@ content:
     description: the commands output as a string.
     type: str
     returned: always
-    sample: "\nSerial Number                   Main Version                                    \nRUME924058381                   v4.1.0 (May 09 2014 16:39)                      \n\n1 records selected\n\n\u001b[0m\u001b[2K\nMAC Address       Order Code                                                Hardware ID                   \n94-B8-C5-F9-75-80 RS900-HI-D-L2-L2-00                                       RS900 (v2, 40-00-0066)        \n\n1 records selected\n"
+    sample: "\
+        Serial Number                   Main Version                                    \
+        RUME924058381                   v4.1.0 (May 09 2014 16:39)                      \
+        n1 records selected\
+        \u001b[0m\u001b[2K\
+        MAC Address       Order Code                                                Hardware ID                   \
+        94-B8-C5-F9-75-80 RS900-HI-D-L2-L2-00                                       RS900 (v2, 40-00-0066)        \
+        n1 records selected"
 '''
 
 # Python Modules
@@ -79,12 +86,13 @@ from netmiko import ConnectHandler, NetmikoTimeoutException
 import telnetlib
 import time
 
+
 def main():
     module = AnsibleModule(
         argument_spec=dict(
             host=dict(required=True, type='str'),
-            protocol=dict(required=False,type='str', choices=["ssh", "telnet"], default="ssh"),
-            port=dict(required=False,type='int', default=22),
+            protocol=dict(required=False, type='str', choices=["ssh", "telnet"], default="ssh"),
+            port=dict(required=False, type='int', default=22),
             user=dict(required=True, type='str'),
             password=dict(required=True, type='str', no_log=True),
             commands=dict(required=True, type='list'),
@@ -109,7 +117,6 @@ def main():
         tn_client.read_until(b'Password: ')
         tn_client.write(password.encode() + b'\n')
         # Enter CLI prompt
-        #tn_client.read_until(b'X-Logout')
         tn_client.write(b'\x13')
 
         for command in commands:
@@ -124,7 +131,7 @@ def main():
         tn_client.write(b'logout\n')
         tn_client.close()
 
-        module_success=True
+        module_success = True
         # Module return
         if module_success:
             module.exit_json(failed=False, content=output)
@@ -133,35 +140,35 @@ def main():
 
     else:
         ssh_client = ConnectHandler(host, device_type='autodetect', username=user, port=port, password=password, auth_timeout=90, timeout=60)
-        ssh_client.send_command_timing('\n \x13',last_read=1)
-        output=""
+        ssh_client.send_command_timing('\n \x13', last_read=1)
+        output = ""
         for command in commands:
             # Aux Vars:
             more_prompt = "--More-- or (q)uit"
             cmd_output = ""
             # Execute command:
-            page = ssh_client.send_command_timing(command,last_read=1)
+            page = ssh_client.send_command_timing(command, last_read=1)
             while True:
                 try:
                     cmd_output += page
                     if more_prompt in page:
-                        page = ssh_client.send_command_timing('\n',last_read=1)
+                        page = ssh_client.send_command_timing('\n', last_read=1)
                     else:
                         break
                 except NetmikoTimeoutException:
                     print("Time Out Exeption")
                     break
-            output += cmd_output.replace(more_prompt,"")
+            output += cmd_output.replace(more_prompt, "")
 
         ssh_client.disconnect()
 
         # Module return
-        module_success=True
+        module_success = True
         if module_success:
             module.exit_json(failed=False, content=output)
         else:
             module.exit_json(failed=True, content=output)
 
+
 if __name__ == "__main__":
     main()
-
