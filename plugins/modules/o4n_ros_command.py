@@ -8,7 +8,7 @@ module: o4n_ros_command
 
 short_description: Ansible module for executing commands in Ruggedcom ROS devices
 
-version_added: "1.0.0"
+version_added: "1.0.2"
 
 description: Ansible module for executing commands in Ruggedcom ROS devices.
 
@@ -118,17 +118,20 @@ def main():
         tn_client.write(password.encode() + b'\n')
         # Enter CLI prompt
         tn_client.write(b'\x13')
+        tn_client.write(b'cls' + b'\n')
+        time.sleep(1)
+        tn_client.read_very_eager()
+        tn_client.write(b'\n')
 
         for command in commands:
-            time.sleep(1)
+            time.sleep(0.2)
             tn_client.write(command.encode() + b'\n')
 
         # send finish keyword and read output
-        tn_client.write(b'FIN')
-        output = tn_client.read_until(b'>FIN')
+        tn_client.write(b'    '+b'\n')
+        output = tn_client.read_until(b'>    ')
         output = output.decode('ascii')
         # close session
-        tn_client.write(b'logout\n')
         tn_client.close()
 
         module_success = True
@@ -145,7 +148,7 @@ def main():
         for command in commands:
             # Aux Vars:
             more_prompt = "--More-- or (q)uit"
-            cmd_output = ""
+            cmd_output = '>' + command + '\n'
             # Execute command:
             page = ssh_client.send_command_timing(command, last_read=1)
             while True:
