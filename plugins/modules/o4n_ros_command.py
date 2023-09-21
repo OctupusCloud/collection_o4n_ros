@@ -176,7 +176,7 @@ Connection settings:
         # send finish keyword and read output
         tn_client.write(b'    '+b'\n')
         try:
-            output = tn_client.read_until(b'>    ')
+            output = tn_client.read_until(b'>    ', telnet_timeout)
         except Exception as err:
             ret_msg = 'O4N_ERROR: Telnet Command Exception \n' + str(err)
             module.fail_json(msg=ret_msg, failed=True, changed=False)
