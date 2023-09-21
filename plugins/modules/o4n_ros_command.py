@@ -124,14 +124,14 @@ def main():
         try:
             tn_client = telnetlib.Telnet(host=host, port=port, timeout=telnet_timeout)
         except Exception as err:
-            ret_msg = 'O4N_ERROR: Telnet Connection Exception (a)\nConnection settings: ' + user + '@' +  host + ':' + str(port) + '\n' + str(err)
+            ret_msg = 'O4N_ERROR: Telnet Connection Exception (a)\nConnection settings: ' + user + '@' + host + ':' + str(port) + '\n' + str(err)
             module.fail_json(msg=ret_msg, failed=True, changed=False)
             return()
         # send user
         try:
             tn_client.read_until(b'Enter User Name: ', telnet_timeout)
         except Exception as err:
-            ret_msg = 'O4N_ERROR: Telnet Connection Exception (b)\nConnection settings: ' + user + '@' +  host + ':' + str(port) + '\n' + str(err)
+            ret_msg = 'O4N_ERROR: Telnet Connection Exception (b)\nConnection settings: ' + user + '@' + host + ':' + str(port) + '\n' + str(err)
             module.fail_json(msg=ret_msg, failed=True, changed=False)
             return()
         tn_client.write(user.encode() + b'\n')
@@ -139,7 +139,7 @@ def main():
         try:
             tn_client.read_until(b'Password: ', telnet_timeout)
         except Exception as err:
-            ret_msg = 'O4N_ERROR: Telnet Connection Exception (c)\nConnection settings: ' + user + '@' +  host + ':' + str(port) + '\n' + str(err)
+            ret_msg = 'O4N_ERROR: Telnet Connection Exception (c)\nConnection settings: ' + user + '@' + host + ':' + str(port) + '\n' + str(err)
             module.fail_json(msg=ret_msg, failed=True, changed=False)
             return()
         tn_client.write(password.encode() + b'\n')
@@ -150,7 +150,7 @@ def main():
         try:
             tn_client.read_very_eager()
         except Exception as err:
-            ret_msg = 'O4N_ERROR: Telnet Connection Exception (d)\nConnection settings: ' + user + '@' +  host + ':' + str(port) + '\n' + str(err)
+            ret_msg = 'O4N_ERROR: Telnet Connection Exception (d)\nConnection settings: ' + user + '@' + host + ':' + str(port) + '\n' + str(err)
             module.fail_json(msg=ret_msg, failed=True, changed=False)
             return()
         tn_client.write(b'\n')
@@ -166,7 +166,7 @@ Common causes of this problem are:\n
 2. Connecting to the wrong device\n
 Connection settings:
 """
-            module.fail_json(msg=ret_msg + user + '@' +  host + ':' + str(port) , failed=True, changed=False)
+            module.fail_json(msg=ret_msg + user + '@' + host + ':' + str(port), failed=True, changed=False)
             return()
 
         for command in commands:
@@ -246,4 +246,3 @@ Connection settings:
 
 if __name__ == "__main__":
     main()
-
