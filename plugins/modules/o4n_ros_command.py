@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python
 from __future__ import (absolute_import, division, print_function)  # Ansible
 __metaclass__ = type
 
@@ -49,6 +49,7 @@ options:
 requirements:
     - netmiko
     - telnetlib
+    - Establecer `ansible_python_interpreter` a Python 3 si es necesario.
 
 author:
     - Marcos Schonfeld (@marcosmas28)
